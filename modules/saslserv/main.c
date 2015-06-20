@@ -132,6 +132,7 @@ void _modinit(module_t *m)
 	hook_add_event("server_eob");
 	hook_add_server_eob(sasl_server_eob);
 	hook_add_event("sasl_may_impersonate");
+	hook_add_event("user_can_login");
 
 	delete_stale_timer = mowgli_timer_add(base_eventloop, "sasl_delete_stale", delete_stale, NULL, 30);
 
@@ -240,6 +241,30 @@ void destroy_session(sasl_session_t *p)
 	free(p->ip);
 
 	free(p);
+}
+
+static sourceinfo_t *sasl_sourceinfo_create(sasl_session_t *p)
+{
+	char description[BUFSIZE];
+	sourceinfo_t *si;
+
+	snprintf(description, BUFSIZE, "Unknown user (via SASL)");
+
+	struct sourceinfo_vtable sasl_vtable = {
+		.description = description,
+		.get_source_name = sasl_get_source_name,
+		.get_source_mask = sasl_get_source_name
+	};
+
+	si = sourceinfo_create();
+	si->connection = curr_uplink->conn;
+	if (p->host)
+		si->sourcedesc = p->host;
+	si->service = saslsvs;
+	si->v = &sasl_vtable;
+	si->force_language = language_find("en");
+
+	return si;
 }
 
 /* interpret an AUTHENTICATE message */
@@ -464,29 +489,8 @@ static void sasl_packet(sasl_session_t *p, char *buf, int len)
 		myuser_t *mu = myuser_find_by_nick(p->username);
 		if (mu)
 		{
-			char description[BUFSIZE];
-
-			if (p->server && !hide_server_names)
-				snprintf(description, BUFSIZE, "Unknown user on %s (via SASL)", p->server->name);
-			else
-				snprintf(description, BUFSIZE, "Unknown user (via SASL)");
-
-			struct sourceinfo_vtable sasl_vtable = {
-				.description = description,
-				.get_source_name = sasl_get_source_name,
-				.get_source_mask = sasl_get_source_name
-			};
-
-			sourceinfo_t *si = sourceinfo_create();
-			si->service = saslsvs;
-			si->connection = curr_uplink->conn;
-			si->v = &sasl_vtable;
-			si->force_language = language_find("en");
-			if (p->host)
-				si->sourcedesc = p->host;
-
+			sourceinfo_t *si = sasl_sourceinfo_create(p);
 			bad_password(si, mu);
-
 			object_unref(si);
 		}
 	}
@@ -577,6 +581,7 @@ static bool may_impersonate(myuser_t *source_mu, myuser_t *target_mu)
 static myuser_t *login_user(sasl_session_t *p)
 {
 	myuser_t *source_mu, *target_mu;
+	hook_user_login_check_t req;
 
 	/* source_mu is the user whose credentials we verified ("authentication id") */
 	/* target_mu is the user who will be ultimately logged in ("authorization id") */
@@ -584,6 +589,16 @@ static myuser_t *login_user(sasl_session_t *p)
 	source_mu = myuser_find_by_nick(p->username);
 	if(source_mu == NULL)
 		return NULL;
+
+	req.si = sasl_sourceinfo_create(p);
+	req.mu = source_mu;
+	req.allowed = true;
+	hook_call_user_can_login(&req);
+	if (!req.allowed)
+	{
+		sasl_logcommand(p, source_mu, CMDLOG_LOGIN, "failed LOGIN to \2%s\2 (denied by hook)", entity(source_mu)->name);
+		return NULL;
+	}
 
 	if(p->authzid && *p->authzid)
 	{
@@ -614,6 +629,15 @@ static myuser_t *login_user(sasl_session_t *p)
 		}
 
 		sasl_logcommand(p, source_mu, CMDLOG_LOGIN, "allowed IMPERSONATE by \2%s\2 to \2%s\2", entity(source_mu)->name, entity(target_mu)->name);
+
+		req.mu = target_mu;
+		req.allowed = true;
+		hook_call_user_can_login(&req);
+		if (!req.allowed)
+		{
+			sasl_logcommand(p, source_mu, CMDLOG_LOGIN, "failed LOGIN to \2%s\2 (denied by hook)", entity(target_mu)->name);
+			return NULL;
+		}
 
 		if(metadata_find(target_mu, "private:freeze:freezer"))
 		{
