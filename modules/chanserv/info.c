@@ -129,22 +129,6 @@ static void cs_cmd_info(sourceinfo_t *si, int parc, char *parv[])
 			(md = metadata_find(mc, "private:entrymsg")))
 		command_success_nodata(si, "Entrymsg   : %s", md->value);
 
-	if (!hide_info)
-	{
-		MOWGLI_PATRICIA_FOREACH(md, &state, object(mc)->metadata)
-		{
-			if (!strncmp(md->name, "private:", 8))
-				continue;
-			/* these are shown separately */
-			if (!strcasecmp(md->name, "email") ||
-					!strcasecmp(md->name, "url") ||
-					!strcasecmp(md->name, "disable_fantasy"))
-				continue;
-			command_success_nodata(si, _("Metadata   : %s = %s"),
-					md->name, md->value);
-		}
-	}
-
 	*buf = '\0';
 
 	if (MC_HOLD & mc->flags)
