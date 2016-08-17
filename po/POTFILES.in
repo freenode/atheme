@@ -192,6 +192,7 @@ modules/nickserv/set_private.c
 modules/nickserv/set_privmsg.c
 modules/nickserv/set_property.c
 modules/nickserv/set_quietchg.c
+modules/nickserv/set_quietpass.c
 modules/nickserv/status.c
 modules/nickserv/taxonomy.c
 modules/nickserv/vacation.c

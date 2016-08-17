@@ -59,6 +59,7 @@ BASE_SRCS =			\
 	set_property.c	\
 	set_pubkey.c	\
 	set_quietchg.c	\
+	set_quietpass.c	\
 	setpass.c	\
 	status.c	\
 	taxonomy.c	\

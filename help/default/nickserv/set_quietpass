@@ -1,0 +1,17 @@
+Help for SET QUIETPASS:
+
+SET QUIETPASS prevents services from automatically
+notifying you when another user tries to log in as
+you without having the correct password. When set
+to ON, Services will no longer send you messages of
+this nature while you are logged in.
+
+When you connect, Services tells you anyway the
+number of such events that occurred since your last
+successful login. This includes the time where you
+were subsequently logged.
+
+Syntax: SET QUIETPASS ON|OFF
+
+Example:
+    /msg &nick& SET QUIETPASS ON
