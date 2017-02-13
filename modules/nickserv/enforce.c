@@ -322,7 +322,7 @@ static void ns_cmd_regain(sourceinfo_t *si, int parc, char *parv[])
 	if ((si->smu == mn->owner) || verify_password(mn->owner, password))
 	{
 		user_t *realuser;
-		if (si->su == NULL) return_if_fail((realuser = u) == NULL);
+		if (si->su == NULL) return_if_fail((realuser = u) != NULL);
 		else realuser = si->su;
 
 		/* We cannot use user_is_channel_banned because we can't check if the same channel has an exception. */
