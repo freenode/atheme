@@ -18,7 +18,7 @@
  */
 static inline channel_t *channel_find(const char *name)
 {
-	return name ? mowgli_patricia_retrieve(chanlist, name) : NULL;
+	return name ? (channel_t *)mowgli_patricia_retrieve(chanlist, name) : NULL;
 }
 
 /*
@@ -43,7 +43,7 @@ static inline void chanban_clear(channel_t *chan)
 	MOWGLI_ITER_FOREACH_SAFE(n, tn, chan->bans.head)
 	{
 		/* inefficient but avoids code duplication -- jilles */
-		chanban_delete(n->data);
+		chanban_delete((chanban_t *)n->data);
 	}
 }
 

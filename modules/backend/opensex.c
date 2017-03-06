@@ -115,6 +115,8 @@ static const char *opensex_read_str(database_handle_t *db)
 	char *res;
 
 	res = rs->token;
+	char *ptr = strchr(res,'\0');
+	rs->token = ptr? ++ptr : ptr;
 
 	db->token++;
 	return res;
@@ -175,7 +177,7 @@ static bool opensex_write_cell(database_handle_t *db, const char *data, bool mul
 	return_val_if_fail(db != NULL, false);
 	rs = (opensex_t *)db->priv;
 
-	fprintf(rs->f, "%s%s", data != NULL ? data : "*", !multiword ? " " : "");
+	fprintf(rs->f, "%s%c", data?: "*", multiword? '\0' : ' ');
 
 	return true;
 }

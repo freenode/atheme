@@ -41,7 +41,7 @@ static inline myuser_t *myuser_find_uid(const char *uid)
  */
 static inline mynick_t *mynick_find(const char *name)
 {
-	return name ? mowgli_patricia_retrieve(nicklist, name) : NULL;
+	return name ? (mynick_t *)mowgli_patricia_retrieve(nicklist, name) : NULL;
 }
 
 static inline myuser_t *myuser_find_by_nick(const char *name)
@@ -79,12 +79,12 @@ static inline myuser_t *myuser_find_by_nick(const char *name)
  */
 static inline myuser_name_t *myuser_name_find(const char *name)
 {
-	return name ? mowgli_patricia_retrieve(oldnameslist, name) : NULL;
+	return name ? (myuser_name_t *)mowgli_patricia_retrieve(oldnameslist, name) : NULL;
 }
 
 static inline mychan_t *mychan_find(const char *name)
 {
-	return name ? mowgli_patricia_retrieve(mclist, name) : NULL;
+	return name ? (mychan_t *)mowgli_patricia_retrieve(mclist, name) : NULL;
 }
 
 static inline bool chanacs_entity_has_flag(mychan_t *mychan, myentity_t *mt, unsigned int level)

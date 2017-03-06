@@ -24,6 +24,7 @@ SUBDIRS = \
 	security \
 	statserv \
 	scripting \
+	spqf \
 	transport \
 	$(CONTRIB_ENABLE)
 

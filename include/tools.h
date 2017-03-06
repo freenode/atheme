@@ -121,7 +121,7 @@ typedef struct {
 E char *random_string(int sz);
 E void create_challenge(sourceinfo_t *si, const char *name, int v, char *dest);
 E void tb2sp(char *line);
-E char *replace(char *s, int size, const char *old, const char *new);
+E char *replace(char *s, int size, const char *old, const char *_new);
 E const char *number_to_string(int num);
 E int validemail(const char *email);
 E stringref canonicalize_email(const char *email);
