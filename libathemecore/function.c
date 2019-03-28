@@ -781,22 +781,6 @@ bool is_founder(mychan_t *mychan, myentity_t *mt)
 	return false;
 }
 
-bool is_ircop(user_t *user)
-{
-	if (UF_IRCOP & user->flags)
-		return true;
-
-	return false;
-}
-
-bool is_admin(user_t *user)
-{
-	if (UF_ADMIN & user->flags)
-		return true;
-
-	return false;
-}
-
 bool is_autokline_exempt(user_t *user)
 {
 	mowgli_node_t *n;
@@ -808,14 +792,6 @@ bool is_autokline_exempt(user_t *user)
 		if (0 == match(n->data, buf))
 			return true;
 	}
-	return false;
-}
-
-bool is_service(user_t *user)
-{
-	if (UF_SERVICE & user->flags)
-		return true;
-
 	return false;
 }
 

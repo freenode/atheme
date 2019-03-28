@@ -69,11 +69,8 @@ typedef struct {
 } hook_user_delete_t;
 
 /* function.c */
-E bool is_ircop(user_t *user);
-E bool is_admin(user_t *user);
 E bool is_internal_client(user_t *user);
 E bool is_autokline_exempt(user_t *user);
-E bool is_service(user_t *user);
 
 /* users.c */
 E mowgli_patricia_t *userlist;

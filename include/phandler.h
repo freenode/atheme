@@ -241,6 +241,13 @@ E void (*topiclock_sts)(channel_t *c);
 E void (*quarantine_sts)(user_t *source, user_t *victim, long duration, const char *reason);
 /* Ask the proto module if this is valid as an extban */
 E bool (*is_extban)(const char *mask);
+/* previously located in libathemecore/function.c; used for various
+ * things that need to know whether a given user has ircd privs */
+E bool (*is_ircop)(user_t *u);
+/* as above; not used for much */
+E bool (*is_admin)(user_t *u);
+/* as above; used to respect external services clients */
+E bool (*is_service)(user_t *u);
 
 E unsigned int generic_server_login(void);
 E void generic_introduce_nick(user_t *u);
@@ -286,6 +293,9 @@ E void generic_mlock_sts(channel_t *c);
 E void generic_topiclock_sts(channel_t *c);
 E void generic_quarantine_sts(user_t *source, user_t *victim, long duration, const char *reason);
 E bool generic_is_extban(const char *mask);
+E bool generic_is_ircop(user_t *u);
+E bool generic_is_admin(user_t *u);
+E bool generic_is_service(user_t *u);
 
 E struct cmode_ *mode_list;
 E struct extmode *ignore_mode_list;

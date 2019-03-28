@@ -68,6 +68,9 @@ void (*mlock_sts)(channel_t *c) = generic_mlock_sts;
 void (*topiclock_sts)(channel_t *c) = generic_topiclock_sts;
 void (*quarantine_sts)(user_t *source, user_t *victim, long duration, const char *reason) = generic_quarantine_sts;
 bool (*is_extban)(const char *mask) = generic_is_extban;
+bool (*is_ircop)(user_t *u) = generic_is_ircop;
+bool (*is_admin)(user_t *u) = generic_is_admin;
+bool (*is_service)(user_t *u) = generic_is_service;
 
 unsigned int generic_server_login(void)
 {
@@ -394,6 +397,30 @@ void generic_quarantine_sts(user_t *source, user_t *victim, long duration, const
 
 bool generic_is_extban(const char *mask)
 {
+	return false;
+}
+
+bool generic_is_ircop(user_t *u)
+{
+	if (UF_IRCOP & u->flags)
+		return true;
+
+	return false;
+}
+
+bool generic_is_admin(user_t *u)
+{
+	if (UF_ADMIN & u->flags)
+		return true;
+
+	return false;
+}
+
+bool generic_is_service(user_t *u)
+{
+	if (UF_SERVICE & u->flags)
+		return true;
+
 	return false;
 }
 
