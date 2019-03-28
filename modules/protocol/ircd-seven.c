@@ -15,6 +15,8 @@
 
 DECLARE_MODULE_V1("protocol/ircd-seven", true, _modinit, NULL, PACKAGE_STRING, "Atheme Development Group <http://www.atheme.org>");
 
+#define UF_HELPER UF_CUSTOM1
+
 /* *INDENT-OFF* */
 
 ircd_t Seven = {
@@ -75,6 +77,7 @@ struct cmode_ seven_user_mode_list[] = {
   { 'a', UF_ADMIN    },
   { 'i', UF_INVIS    },
   { 'o', UF_IRCOP    },
+  { 'O', UF_HELPER   },
   { 'D', UF_DEAF     },
   { 'S', UF_SERVICE  },
   { '\0', 0 }
@@ -256,6 +259,14 @@ static bool seven_on_logout(user_t *u, const char *account)
 	return false;
 }
 
+static bool seven_is_ircop(user_t *u)
+{
+	if ((UF_IRCOP | UF_HELPER) & u->flags)
+		return true;
+
+	return false;
+}
+
 static void nick_group(hook_user_req_t *hdata)
 {
 	user_t *u;
@@ -285,6 +296,7 @@ void _modinit(module_t * m)
 	ircd_on_login = &seven_on_login;
 	ircd_on_logout = &seven_on_logout;
 	is_valid_host = &seven_is_valid_hostslash;
+	is_ircop = &seven_is_ircop;
 
 	pcommand_delete("NICK");
 	pcommand_add("NICK", m_nick, 2, MSRC_USER | MSRC_SERVER);
