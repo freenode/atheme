@@ -321,11 +321,25 @@ static void ns_cmd_regain(sourceinfo_t *si, int parc, char *parv[])
 	}
 	if ((si->smu == mn->owner) || verify_password(mn->owner, password))
 	{
-		if ((si->su != NULL && (user_is_channel_banned(si->su, 'b') || user_is_channel_banned(si->su, 'q'))) ||
-		    (u != NULL && (user_is_channel_banned(u, 'b') || user_is_channel_banned(u, 'q'))))
+		user_t *realuser;
+		if (si->su == NULL) return_if_fail((realuser = u) != NULL);
+		else realuser = si->su;
+
+		/* We cannot use user_is_channel_banned because we can't check if the same channel has an exception. */
+		MOWGLI_ITER_FOREACH(n, realuser->channels.head)
 		{
-			command_fail(si, fault_noprivs, _("You can not regain your nickname while banned or quieted on a channel."));
-			return;
+			chanuser_t *cu = n->data;
+
+			if (next_matching_ban(cu->chan, realuser, 'b', cu->chan->bans.head) != NULL ||
+			    next_matching_ban(cu->chan, realuser, 'q', cu->chan->bans.head) != NULL)
+			{
+				/* Check for exceptions. (+e) */
+				if (next_matching_ban(cu->chan, realuser, 'e', cu->chan->bans.head) == NULL)
+				{
+					command_fail(si, fault_noprivs, _("You can not regain your nickname while banned or quieted on a channel."));
+					return;
+				}
+			}
 		}
 
 		/* if this (nick, host) is waiting to be enforced, remove it */
