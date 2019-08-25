@@ -21,6 +21,7 @@ NOMEMO        - Tous les utilisateurs avec le flag NOMEMO actif.
 EMAILMEMOS    - Tous les utilisateurs avec le flag EMAILMEMOS actif.
 USE-PRIVMSG   - Tous les utilisateurs avec le flag USEPRIVMSG actif.
 QUIETCHG      - Tous les utilisateurs avec le flag QUIETCHG actif.
+QUIETPASS     - Tous les utilisateurs avec le flag QUIETPASS actif.
 NOGREET       - Tous les utilisateurs avec le flag NOGREET actif.
 PRIVATE       - Tous les utilisateurs avec le flag PRIVATE actif.
 REGNOLIMIT    - Tous les utilisateurs avec le flag REGNOLIMIT actif.

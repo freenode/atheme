@@ -24,6 +24,7 @@ NOMEMO        - All users with the NOMEMO flag set.
 EMAILMEMOS    - All users with the EMAILMEMOS flag set.
 USE-PRIVMSG   - All users with the USEPRIVMSG flag set.
 QUIETCHG      - All users with the QUIETCHG flag set.
+QUIETPASS     - All users with the QUIETPASS flag set.
 NOGREET       - All users with the NOGREET flag set.
 PRIVATE       - All users with the PRIVATE flag set.
 REGNOLIMIT    - All users with the REGNOLIMIT flag set.

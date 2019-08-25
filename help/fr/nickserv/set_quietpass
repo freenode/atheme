@@ -1,0 +1,19 @@
+Aide pour SET QUIETPASS:
+
+SET QUIETPASS empêche les services de vous notifier
+automatiquement lorsqu'un autre utilisateur tente de
+se logger sous votre nom, sans avoir le bon mot de
+passe. Lorsque ceci est défini à ON, les services
+ne vous enverront plus de messages de cette nature
+pendant que vous êtes connecté.
+
+Au moment de la connexion, les services vous notifient
+de toute manière du nombre de tels événements qui
+se sont produit depuis l'instant auquel votre connexion
+précédente a été établie. Cela inclus le temps
+pendant lequel vous étiez loggé.
+
+Syntaxe : SET QUIETPASS ON|OFF
+
+Exemple :
+    /msg &nick& SET QUIETPASS ON
